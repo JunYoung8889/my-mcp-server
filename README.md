@@ -1,20 +1,24 @@
-# TypeScript MCP Server 보일러플레이트
+# Vercel HTTP MCP Server
 
-TypeScript MCP SDK를 활용하여 Model Context Protocol (MCP) 서버를 빠르게 개발할 수 있는 보일러플레이트 프로젝트입니다.
+Next.js App Router와 `mcp-handler`를 사용해 Vercel에 배포할 수 있도록 구성한 HTTP 기반 Model Context Protocol (MCP) 서버입니다.
 
-## 📁 프로젝트 구조
+## 프로젝트 구조
 
-```
-typescript-mcp-server-boilerplate/
+```text
+my-mcp-server/
+├── app/
+│   ├── api/[transport]/route.ts  # HTTP MCP 엔드포인트
+│   ├── layout.tsx
+│   └── page.tsx
 ├── src/
-│   └── index.ts          # MCP 서버 메인 진입점
-├── build/                # 컴파일된 JavaScript 파일 (빌드 후 생성)
-├── package.json          # 프로젝트 의존성 및 스크립트
-├── tsconfig.json         # TypeScript 설정
-└── README.md            # 프로젝트 문서
+│   ├── index.ts                  # MCP 등록 모듈 export
+│   └── mcp/registerServer.ts     # 도구, 리소스, 프롬프트 등록
+├── package.json
+├── tsconfig.json
+└── README.md
 ```
 
-## 🚀 시작하기
+## 시작하기
 
 ### 1. 의존성 설치
 
@@ -22,37 +26,48 @@ typescript-mcp-server-boilerplate/
 npm install
 ```
 
-### 2. 서버 이름 설정
+### 2. 환경 변수 준비
 
-`src/index.ts` 파일에서 서버 이름을 수정하세요:
+`generate-image` 도구를 사용하려면 `HF_TOKEN`이 필요합니다.
 
-```typescript
-const server = new McpServer({
-    name: 'typescript-mcp-server', // 여기를 원하는 서버 이름으로 변경
-    version: '1.0.0',
-    // 활성화 하고자 하는 기능 설정
-    capabilities: {
-        tools: {},
-        resources: {}
-    }
-})
+Vercel 배포 시:
+
+```bash
+vercel env add HF_TOKEN
 ```
 
-> 💡 **팁**: 현재 보일러플레이트에는 이미 계산기와 인사 도구, 그리고 서버 정보 리소스가 예시로 구현되어 있습니다.
+로컬 개발 시:
 
-### 3. 빌드
+```bash
+$env:HF_TOKEN="your-token"
+```
+
+### 3. 로컬 실행
+
+```bash
+npm run dev
+```
+
+개발 서버가 실행되면 MCP 엔드포인트는 `http://localhost:3000/api/mcp` 입니다.
+
+### 4. 프로덕션 빌드
 
 ```bash
 npm run build
+npm run start
 ```
 
-### 4. 실행
+## Cursor 설정 예시
 
-```bash
-node build/index.js
+```json
+{
+  "mcpServers": {
+    "my-mcp-server": {
+      "url": "https://your-deployment.vercel.app/api/mcp"
+    }
+  }
+}
 ```
-
-빌드가 성공하면 `build/` 디렉토리에 컴파일된 JavaScript 파일이 생성되고, 서버가 MCP 클라이언트의 연결을 대기합니다.
 
 ## 🛠️ 개발 가이드
 

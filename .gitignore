@@ -144,3 +144,4 @@ build/
 
 # Cursor configuration (personal settings)
 .cursor/
+.vercel
