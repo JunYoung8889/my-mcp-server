@@ -13,14 +13,14 @@ export function registerMcpFeatures(server: McpServer) {
         {
             title: '인사말 생성',
             description: '이름과 언어를 입력하면 인사말을 반환합니다.',
-            inputSchema: {
+            inputSchema: z.object({
                 name: z.string().describe('인사할 사람의 이름'),
                 language: z
                     .enum(['ko', 'en'])
                     .optional()
                     .default('en')
                     .describe('인사 언어 (기본값: en)')
-            }
+            })
         },
         async ({ name, language }) => {
             const greeting =
@@ -52,13 +52,13 @@ export function registerMcpFeatures(server: McpServer) {
         {
             title: '계산기',
             description: '두 숫자와 연산자를 입력하면 계산 결과를 반환합니다.',
-            inputSchema: {
+            inputSchema: z.object({
                 a: z.number().describe('첫 번째 숫자'),
                 b: z.number().describe('두 번째 숫자'),
                 operator: z
                     .enum(['+', '-', '*', '/'])
                     .describe('연산자: + (더하기), - (빼기), * (곱하기), / (나누기)')
-            }
+            })
         },
         async ({ a, b, operator }) => {
             let result: number
@@ -101,9 +101,9 @@ export function registerMcpFeatures(server: McpServer) {
         {
             title: '좌표 조회',
             description: '도시 이름을 입력하면 위도와 경도 좌표를 반환합니다.',
-            inputSchema: {
+            inputSchema: z.object({
                 city: z.string().describe('좌표를 조회할 도시 이름 (한국어 또는 영어)')
-            }
+            })
         },
         async ({ city }) => {
             const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`
@@ -133,10 +133,10 @@ export function registerMcpFeatures(server: McpServer) {
         {
             title: '날씨 조회',
             description: '위도와 경도를 입력하면 현재 날씨와 오늘의 시간별 기온을 반환합니다.',
-            inputSchema: {
+            inputSchema: z.object({
                 latitude: z.number().describe('위도 (예: 37.5665)'),
                 longitude: z.number().describe('경도 (예: 126.9780)')
-            }
+            })
         },
         async ({ latitude, longitude }) => {
             const url =
@@ -184,7 +184,7 @@ export function registerMcpFeatures(server: McpServer) {
             title: '이미지 생성',
             description:
                 '프롬프트를 입력하면 HuggingFace Inference API로 이미지를 생성해 반환합니다. HF_TOKEN이 필요합니다.',
-            inputSchema: {
+            inputSchema: z.object({
                 prompt: z.string().describe('이미지 생성 프롬프트'),
                 num_inference_steps: z
                     .number()
@@ -194,7 +194,7 @@ export function registerMcpFeatures(server: McpServer) {
                     .optional()
                     .default(4)
                     .describe('추론 스텝 수 (1~10)')
-            }
+            })
         },
         async ({ prompt, num_inference_steps }) => {
             const token = process.env.HF_TOKEN
